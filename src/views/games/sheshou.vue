@@ -5,103 +5,51 @@
 -->
 <template>
   <div class="sheshou">
-    <!-- 天空 -->
-    <div class="sky" v-html="sky">
-      <!-- <img :src="require('./../../assets/sky.png')" :style="{left: (item - 1) * 10 + '%', top: Math.floor(Math.random()*200+200) - 200 + 'px'}" v-for="item in 10" :key="item"> -->
-    </div>
-    <!-- 附属物 -->
-    <div class="adjunct">
-      <img :src="require('./../../assets/my.png')" class="my">
-      <div class="dog-home">
-        <div class="dialog" v-if="dialog.dogHome">
-          <p>我的主人是一名<br>前端工程师</p>
-          <img :src="require('./../../assets/bubb.png')">
-        </div>
-        <img :src="require('./../../assets/dog.png')" class="my-dog b0" @mouseenter="mouseShow('dogHome', true)" @mouseleave="mouseShow('dogHome', false)">
-        <p class="name">MINI</p>
+    <div class="scroll" style="width: 5006px">
+      <!-- 天空 -->
+      <div class="sky" v-html="sky">
+        <!-- <img :src="require('./../../assets/sky.png')" :style="{left: (item - 1) * 10 + '%', top: Math.floor(Math.random()*200+200) - 200 + 'px'}" v-for="item in 10" :key="item"> -->
       </div>
-      <div class="my-doctor">
-        <div class="dialog" v-if="dialog.doctor">
-          <p>我是蘑菇博士<br>点击我查看主人信息哦</p>
-          <img :src="require('./../../assets/bubb.png')">
+      <!-- 地面 -->
+      <div class="pavement">
+        <scene-icon :scene="scene['left']"></scene-icon>
+        <scene-icon :scene="scene['center']" v-for="item in 50" :key="item"></scene-icon>
+        <scene-icon :scene="scene['right']"></scene-icon>
+        <div class="nvshen">
+          <npc-box :NpcSetting="girl"></npc-box>
         </div>
-        <img :src="require('./../../assets/myspk.gif')" class="my-spk b0 item-click" @mouseenter="mouseShow('doctor', true)" @mouseleave="mouseShow('doctor', false)">
-        <p class="name">蘑菇博士</p>
-      </div>
-    </div>
-    <!-- 地面 -->
-    <div class="pavement">
-      <scene-icon :scene="scene['left']"></scene-icon>
-      <scene-icon :scene="scene['center']" v-for="item in 50" :key="item"></scene-icon>
-      <scene-icon :scene="scene['right']"></scene-icon>
-      <div class="user-info">
-        <div class="user-name">
-          <p class="user-lv">LV. 151</p>
-          <div class="user-des">
-            <p class="job">前端工程师</p>
-            <p class="pet">姜润丰</p>
-          </div>
-          <div class="stage">
-            <img :src="level[0].icon">
-          </div>
+        <footer-box></footer-box>
+        <div class="trans">
+          <transfer :list="trans"></transfer>
         </div>
-        <div class="expend">
-          <div class="top">
-            <div class="hp">
-              <span class="text">HP.</span>
-              <div class="expend-box">
-                <div class="bar" style="width: 50%"></div>
-              </div>
-            </div>
-            <div class="mp">
-              <span class="text">MP.</span>
-              <div class="expend-box">
-                <div class="bar" style="width: 50%"></div>
-              </div>
-            </div>
-          </div>
-          <div class="exp">
-            <span class="text"> EXP.</span>
-            <div class="expend-box">
-              <div class="bar" style="width: 50%"></div>
-            </div>
-          </div>
-        </div>
-        <div class="fun-btn">
-          <!-- 人物 -->
-          <img :src="require('./../../assets/js.png')">
-          <!-- 宝具 -->
-          <img :src="require('./../../assets/wq.png')">
-          <!-- 行囊 -->
-          <img :src="require('./../../assets/xn.png')">
-          <!-- 人物 -->
-          <img :src="require('./../../assets/rw.png')">
-          <!-- 强化 -->
-          <img :src="require('./../../assets/qh.png')">
-          <!-- 日常 -->
-          <img :src="require('./../../assets/rc.png')">
-          <!-- 奖励 -->
-          <img :src="require('./../../assets/jl.png')">
-          <!-- 社交 -->
-          <img :src="require('./../../assets/sj.png')">
-          <!-- 修炼 -->
-          <img :src="require('./../../assets/xl.png')">
-          <!-- 观星 -->
-          <img :src="require('./../../assets/gx.png')">
-          <!-- 设置 -->
-          <img :src="require('./../../assets/sz.png')">
+        <!-- 附属物 -->
+        <div class="adjunct">
+          <npc-box :NpcSetting="npc"></npc-box>
         </div>
       </div>
     </div>
+    
     <!-- <audio id="music" :src="require('./../../music/smcbj.mp3')" preload loop controls></audio> -->
   </div>
 </template>
 <script>
+// NPC
+import NpcBox from "@/components/NpcBox"
+// 底部信息栏
+import FooterBox from "@/components/FooterBox"
+// 路面拼图
 import SceneIcon from '@/components/SceneIcon'
+// 传送门
+import Transfer from '@/components/Transfer'
+// npc信息
+import { Npc } from '@/utils/npc'
 export default {
   name: 'sheshou',
   components: {
-    SceneIcon
+    SceneIcon,
+    FooterBox,
+    NpcBox,
+    Transfer
   },
   data() {
     return {
@@ -115,38 +63,22 @@ export default {
       },
       // 路面
       bottom: ["left", "center", "right"],
-      // 对话
-      dialog: {
-        dogHome: false,
-        doctor: false
-      },
-      // 段位
-      level: [
+      // NPC
+      npc: [],
+      // 女神
+      girl: [
         {
-          text: "HTML",
-          icon: require('./../../assets/lv1.png'),
-          min: 1,
-          max: 29
-        },
-        {
-          text: "CSS",
-          icon: require('./../../assets/lv2.png'),
-          min: 30,
-          max: 59
-        },
-        {
-          text: "JS",
-          icon: require('./../../assets/lv3.png'),
-          min: 60,
-          max: 89
-        },
-        {
-          text: "VUE",
-          icon: require('./../../assets/lv4.png'),
-          min: 90,
-          max: 120
+          width: 300,
+          height: 205,
+          name: "程序猿的渴望",
+          icon: require('@/assets/nvshen.png'),
+          mr: 40,
+          nameShow: true,
+          text: "每个程序猿心中都藏着一个女神我就是你的动力"
         }
-      ]
+      ],
+      // 传送门位置
+      trans: [1200, 2380,2840, 3230,3620, 4200]
     }
   },
   created() {
@@ -155,7 +87,7 @@ export default {
       cloud+=`<img src="${require('./../../assets/sky.png')}" style="left: ${(i - 1) * 10}%; top:${Math.floor(Math.random()*200+200) - 200}px;position: absolute;width: 512px;height: 136px;">`
     }
     this.sky = cloud
-    console.log(cloud)
+    this.npc = Npc.sheshou
   },
   mounted() {
     // let music = document.getElementById('music')
@@ -168,7 +100,6 @@ export default {
   methods: {
     mouseShow(val, boolean) {
       this.dialog[val] = boolean
-      console.log(this.dialog)
     }
   }
 }
@@ -176,8 +107,11 @@ export default {
 <style lang="scss" scoped>
 .sheshou {
   width: 100vw;
-  height: 100vh;
-  position: relative;
+  .scroll {
+    height: 100vh;
+    position: relative;
+    transform: translateX(-3500px);
+  }
   .sky {
     width: 100vw;
     position: absolute;
@@ -192,7 +126,7 @@ export default {
   }
   .adjunct {
     position: absolute;
-    bottom: 126px;
+    bottom: 122px;
     display: flex;
     .my {
       margin-left: 50px;
@@ -255,128 +189,33 @@ export default {
     }
   }
   .pavement {
-    position: fixed;
-    display: flex;;
-    // left: -28px;
-    // bottom: -28px;
+    position: absolute;
+    display: flex;
+    left: 0;
     bottom: 0;
-    .user-info {
-      height: 40px;
+    .nvshen {
       position: absolute;
-      width: 100vw;
-      height: 50px;
-      bottom: 30px;
-      // background-image: linear-gradient(to top, #D8D9DB 0%, #fff 80%, #FDFDFD 100%);
-      // box-shadow: 4px 0px 3px 3px #FCFCFC;
-      display: flex;
-      align-items: center;
-      .user-name {
-        width: 15%;
-        min-width: 270px;
-        height: 48px;
-        background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#575757));
-        margin-left: 5px;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        .user-lv {
-          font-size: 30px;
-          color: #fbd125;
-          padding-left: 10px;
-        }
-        .user-des {
-          margin-left: 10px;
-          p {
-            font-size: 14px;
-            color: #fff;
-          }
-          .job {
-            color: #fbd125;
-          }
-        }
-        .stage {
-          width: 40px;
-          height: 40px;
-          background-color: #fff;
-          margin-left: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background-image: linear-gradient(to top, #D8D9DB 0%, #fff 80%, #FDFDFD 100%);
-          border-radius: 30px;
-          border: 1px solid #8F9092;
-          box-shadow: inset 0 0 3px 0 #CECFD1;
-          .current {
-
-          }
-        }
+      left: 30px;
+      top: -600px;
+      animation: move 3s infinite linear;
+    }
+    @keyframes move {
+      0% {
+        top: -600px
       }
-      .expend {
-        width: 35%;
-        min-width: 400px;
-        padding: 0 10px;
-        box-sizing: border-box;
-        .top {
-          display: flex;
-        }
-        .hp,.mp {
-          height: 20px;
-          width: 50%;
-          display: flex;
-          margin-bottom: 5px;
-          .bar {
-            height: 100%;
-          }
-        }
-        .hp .bar {
-          background-image: linear-gradient(#ffbcce,#e70034, #ffbcce);
-        }
-        .mp .bar {
-          background-image: linear-gradient(#9ae9fa,#0fb9e2, #9ae9fa);
-        }
-        .exp {
-          height: 20px;
-          width: 100%;
-          display: flex;
-          .bar {
-            height: 100%;
-            background-image: linear-gradient(#eeffc0,#8fc609, #eeffc0);
-          }
-        }
-        .expend-box {
-          flex: 1;
-          height: 100%;
-          background-image: linear-gradient(#b9b9b9,#404040, #b9b9b9);
-          margin: 0 10px;
-          border-radius: 5px;
-          overflow: hidden;
-          border: 2px solid #4b4950;
-          box-sizing: border-box;
-        }
-        .text {
-          width: 2em;
-          font-size: 14px;
-          font-weight: bold;
-          color: #fff;
-          text-shadow: 0.2em 0.2em 0.2em black, 0em -0.2em 0.2em black,-0.2em 0em 0.2em black;
-        }
+      50% {
+        top: -580px
       }
-      .fun-btn {
-        width: 50%;
-        min-width: 500px;
-        box-sizing: border-box;
-        text-align: right;
-        white-space: nowrap;
-        img {
-          width: 80px;
-          height: 80px;
-          transition: .2s linear;
-          transform: scale(1);
-          &:hover {
-            transform: scale(1.1);
-          }
-        }
+      100% {
+        top: -600px
       }
+    }
+    .trans {
+      height: 183px;
+      position: absolute;
+      bottom: 105px;
+      left: 0;
+      z-index: 2;
     }
   } 
 }

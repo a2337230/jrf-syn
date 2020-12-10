@@ -5,7 +5,6 @@
 -->
 <template>
   <div class="scene" :style="boxStyle">
-    1
   </div>
 </template>
 <script>
@@ -37,6 +36,8 @@ export default {
 </script>
 <style lang="scss" scoped>
   .scene {
+    position: relative;
+    z-index: 3;
     background: url("./../assets/bg.png");
     background-size: 1024px 1024px;
   }
