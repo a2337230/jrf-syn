@@ -102,12 +102,10 @@ export default {
 <style lang="scss" scoped>
 .user-info {
   height: 40px;
-  position: absolute;
+  position: fixed;
   width: 100vw;
   height: 50px;
   bottom: 30px;
-  // background-image: linear-gradient(to top, #D8D9DB 0%, #fff 80%, #FDFDFD 100%);
-  // box-shadow: 4px 0px 3px 3px #FCFCFC;
   display: flex;
   align-items: center;
   .user-name {

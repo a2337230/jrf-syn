@@ -5,7 +5,7 @@
 -->
 <template>
   <div class="sheshou">
-    <div class="scroll" style="width: 5006px">
+    <div class="scroll" id="sheshou" style="width: 5006px" :style="{transform: 'translateX(-' + num +'px'}">
       <!-- 天空 -->
       <div class="sky" v-html="sky">
         <!-- <img :src="require('./../../assets/sky.png')" :style="{left: (item - 1) * 10 + '%', top: Math.floor(Math.random()*200+200) - 200 + 'px'}" v-for="item in 10" :key="item"> -->
@@ -18,7 +18,6 @@
         <div class="nvshen">
           <npc-box :NpcSetting="girl"></npc-box>
         </div>
-        <footer-box></footer-box>
         <div class="trans">
           <transfer :list="trans"></transfer>
         </div>
@@ -28,7 +27,7 @@
         </div>
       </div>
     </div>
-    
+    <footer-box></footer-box>
     <!-- <audio id="music" :src="require('./../../music/smcbj.mp3')" preload loop controls></audio> -->
   </div>
 </template>
@@ -78,7 +77,16 @@ export default {
         }
       ],
       // 传送门位置
-      trans: [1200, 2380,2840, 3230,3620, 4200]
+      trans: [1200, 2380,2840, 3230,3620, 4200],
+      timer: 0,
+      num: 0,
+      // 解决按下卡顿
+      direction: {
+        left: false,
+        top: false,
+        right: false,
+        bottom: false
+      }
     }
   },
   created() {
@@ -96,8 +104,56 @@ export default {
     //   music.play()
     //   // that.loading = false;
     // });
+    this.move('sheshou')
   },
   methods: {
+    move(el) {
+      //当页面加载完后
+      window.onload = function(){
+        //获取Div元素
+        let oDiv = document.getElementById(el);
+        //创建各个方向条件判断初始变量
+        let left = false;
+        let right = false;
+        //当按下对应方向键时，对应变量为true
+        document.onkeydown = function(ev){
+          var oEvent = ev || event;
+          var keyCode = oEvent.keyCode;
+          switch(keyCode){
+            case 37:
+              left=true;
+              break;
+            case 39:
+              right=true;
+              break;
+          }
+        };
+        //设置一个定时，时间为50左右，不要太高也不要太低
+        setInterval(function(){
+          //当其中一个条件为true时，则执行当前函数（移动对应方向）
+          if(left){
+            this.num = -10
+            oDiv.style.left = oDiv.offsetLeft+20+"px";
+          } else if(right){
+            this.num+=20
+            oDiv.style.left = oDiv.offsetLeft-20+"px";
+          }
+        },50);
+        //执行完后，所有对应变量恢复为false，保持静止不动
+        document.onkeyup = function(ev){
+          var oEvent = ev || event;
+          var keyCode = oEvent.keyCode;
+          switch(keyCode){
+            case 37:
+              left=false;
+              break;
+            case 39:
+              right=false;
+              break;
+          }
+        }
+      }
+    },
     mouseShow(val, boolean) {
       this.dialog[val] = boolean
     }
@@ -110,7 +166,8 @@ export default {
   .scroll {
     height: 100vh;
     position: relative;
-    transform: translateX(-3500px);
+    transform: translateX(0px);
+    transition: 0.1s linear;
   }
   .sky {
     width: 100vw;
